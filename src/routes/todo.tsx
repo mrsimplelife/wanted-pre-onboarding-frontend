@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { LegacyRef, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { DeleteTodoParams, GetTodosResponse, UpdateTodoParams, createTodo, deleteTodo, getTodos, updateTodo } from '../api/todo';
 
 function Todo() {
@@ -72,9 +72,13 @@ const TodoItem = memo(function TodoItem({ todo, onCheckTodo, onModifyTodo, onDel
   const { isCompleted, todo: todoText } = todo;
   const [isModify, setIsModify] = useState(false);
   const [text, setText] = useState(todoText);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (isModify) {
       setText(todoText);
+      console.log(inputRef.current);
+      inputRef.current?.focus();
     }
   }, [isModify, todoText]);
   return (
@@ -101,7 +105,7 @@ const TodoItem = memo(function TodoItem({ todo, onCheckTodo, onModifyTodo, onDel
               setIsModify(false);
             }}
           >
-            <input data-testid='modify-input' value={text} onChange={(e) => setText(e.target.value)} />
+            <input ref={inputRef} data-testid='modify-input' value={text} onChange={(e) => setText(e.target.value)} />
             <button data-testid='submit-button'>제출</button>
           </form>
           <button data-testid='cancel-button' onClick={() => setIsModify(false)}>
