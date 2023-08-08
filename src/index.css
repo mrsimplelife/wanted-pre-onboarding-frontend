@@ -54,6 +54,14 @@ button:active {
   transform: translateY(1px);
 }
 
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
 form[action$='destroy'] button {
   color: #f44250;
 }
