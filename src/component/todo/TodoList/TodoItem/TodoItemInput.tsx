@@ -9,7 +9,6 @@ type TodoItemInputProps = {
 function TodoItemInput({ todoText, onSubmit, onCancel }: TodoItemInputProps) {
   const [text, setText] = useState(todoText);
   const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
-
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     inputRef.current?.focus();

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { DeleteTodoParams, GetTodosResponse, UpdateTodoParams, postTodo, deleteTodo, getTodos, putTodo } from '../service/todo';
+import { DeleteTodoParams, GetTodosResponse, UpdateTodoParams, deleteTodo, getTodos, postTodo, putTodo } from '../service/todo';
 
 function useTodos() {
   const [todos, setTodos] = useState<GetTodosResponse>([]);
@@ -8,26 +8,24 @@ function useTodos() {
     getTodos().then(setTodos);
   }, []);
 
-  const handleCreateTodo = useCallback(async (text: string) => {
+  const handleCreateTodo = useCallback(async (todo: string) => {
     try {
-      const res = await postTodo({ todo: text });
-      setTodos((todos) => [...todos, res]);
+      const res = await postTodo({ todo });
+      setTodos((prevs) => [...prevs, res]);
     } catch (e) {}
   }, []);
 
-  const handleUpdateTodo = useCallback(async (_todo: UpdateTodoParams) => {
-    const { id } = _todo;
+  const handleUpdateTodo = useCallback(async ({ id, isCompleted, todo }: UpdateTodoParams) => {
     try {
-      await putTodo(_todo);
-      setTodos((todos) => todos.map((todo) => (todo.id === id ? { ...todo, ..._todo } : todo)));
+      await putTodo({ id, isCompleted, todo });
+      setTodos((prevs) => prevs.map((prev) => (prev.id === id ? { ...prev, id, isCompleted, todo } : prev)));
     } catch (e) {}
   }, []);
 
-  const handleDeleteTodo = useCallback(async (_todo: DeleteTodoParams) => {
-    const { id } = _todo;
+  const handleDeleteTodo = useCallback(async ({ id }: DeleteTodoParams) => {
     try {
       await deleteTodo({ id });
-      setTodos((todos) => todos.filter((todo) => todo.id !== id));
+      setTodos((prevs) => prevs.filter((prev) => prev.id !== id));
     } catch (e) {}
   }, []);
 

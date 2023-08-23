@@ -1,8 +1,9 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { useAuthContext } from '../context/AuthContext';
+import { useAuthContext, useAuthMethodContext } from '../context/AuthContext';
 
 function Layout() {
-  const { token, handleSignout } = useAuthContext();
+  const { token } = useAuthContext();
+  const { handleSignout } = useAuthMethodContext();
   return (
     <>
       <nav>

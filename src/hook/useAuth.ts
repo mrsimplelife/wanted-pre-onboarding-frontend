@@ -1,7 +1,6 @@
-import { FormEventHandler, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signin, signup } from '../service/auth';
-import { getFormValue } from '../utils';
 import { createToken, deleteToken, readToken } from '../service/token';
 
 function useAuth() {
@@ -9,11 +8,8 @@ function useAuth() {
 
   const navigate = useNavigate();
 
-  const handleSignin: FormEventHandler<HTMLFormElement> = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const email = getFormValue(e, 'email');
-      const password = getFormValue(e, 'password');
+  const handleSignin = useCallback(
+    async (email: string, password: string) => {
       try {
         const res = await signin({ email, password });
         createToken(res.access_token);
@@ -24,14 +20,11 @@ function useAuth() {
     [navigate]
   );
 
-  const handleSignup: FormEventHandler<HTMLFormElement> = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const email = getFormValue(e, 'email');
-      const password = getFormValue(e, 'password');
+  const handleSignup = useCallback(
+    async (email: string, password: string) => {
       try {
         await signup({ email, password });
-        navigate('/signin', { replace: true });
+        navigate('/signin');
       } catch (e) {}
     },
     [navigate]

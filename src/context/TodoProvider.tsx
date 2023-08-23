@@ -1,16 +1,28 @@
-import { PropsWithChildren, createContext, useContext } from 'react';
+import { PropsWithChildren, createContext, useContext, useMemo, useState } from 'react';
 import useTodos, { UseTodos } from '../hook/useTodos';
 
-const TodoContext = createContext<UseTodos | null>(null);
+export type TodoContextType = Pick<UseTodos, 'todos'>;
+export type TodoMethodContextType = Pick<UseTodos, 'handleCreateTodo' | 'handleDeleteTodo' | 'handleUpdateTodo'>;
+
+const TodoContext = createContext<TodoContextType | null>(null);
+const TodoMethodContext = createContext<TodoMethodContextType | null>(null);
 
 export function TodoProvider({ children }: PropsWithChildren) {
-  const { todos, handleCreateTodo, handleUpdateTodo, handleDeleteTodo } = useTodos();
+  const { todos, handleCreateTodo, handleDeleteTodo, handleUpdateTodo } = useTodos();
+  const value = useMemo(() => ({ todos }), [todos]);
+  const [method] = useState({ handleCreateTodo, handleDeleteTodo, handleUpdateTodo });
 
-  return <TodoContext.Provider value={{ todos, handleCreateTodo, handleUpdateTodo, handleDeleteTodo }}>{children}</TodoContext.Provider>;
+  return (
+    <TodoContext.Provider value={value}>
+      <TodoMethodContext.Provider value={method}>{children}</TodoMethodContext.Provider>
+    </TodoContext.Provider>
+  );
 }
 
 export function useTodoContext() {
   return useContext(TodoContext)!;
 }
 
-export type TodoContextType = ReturnType<typeof useTodoContext>;
+export function useTodoMethodContext() {
+  return useContext(TodoMethodContext)!;
+}
