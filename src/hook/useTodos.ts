@@ -22,8 +22,8 @@ function useTodos() {
       e.preventDefault();
       try {
         setText('');
-        setTodos((todos) => [...todos, res]);
         const res = await createTodo({ todo: text });
+        setTodos((todos) => [...todos, res]);
       } catch (e) {}
     },
     [text]
