@@ -1,16 +1,18 @@
 import { ChangeEvent, memo, useEffect, useRef, useState } from 'react';
-import { DeleteTodoParams, UpdateTodoParams } from '../service/todo';
+
+import { useTodoContext } from '../context/TodoProvider';
+import { UpdateTodoParams } from '../service/todo';
 
 type TodoItemProps = {
   todo: UpdateTodoParams;
-  onModifyTodo: (todo: UpdateTodoParams) => void;
-  onDeleteTodo: (todo: DeleteTodoParams) => void;
 };
 
-const TodoItem = memo(function TodoItem({ todo, onModifyTodo, onDeleteTodo }: TodoItemProps) {
+const TodoItem = memo(function TodoItem({ todo }: TodoItemProps) {
   const { isCompleted, todo: todoText } = todo;
+
   const [isModify, setIsModify] = useState(false);
   const [text, setText] = useState(todoText);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -20,20 +22,20 @@ const TodoItem = memo(function TodoItem({ todo, onModifyTodo, onDeleteTodo }: To
     }
   }, [isModify, todoText]);
 
-  const handleChangeCheck = (e: ChangeEvent<HTMLInputElement>) => onModifyTodo({ ...todo, isCompleted: e.target.checked });
-
+  const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
   const handleModify = () => setIsModify(true);
+  const handleCancel = () => setIsModify(false);
+
+  const { handleUpdateTodo, handleDeleteTodo } = useTodoContext();
+
+  const handleChangeCheck = (e: ChangeEvent<HTMLInputElement>) => handleUpdateTodo({ ...todo, isCompleted: e.target.checked });
 
   const handleSubmit = () => {
-    onModifyTodo({ ...todo, todo: text });
+    handleUpdateTodo({ ...todo, todo: text });
     setIsModify(false);
   };
 
-  const handleDelete = () => onDeleteTodo(todo);
-
-  const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
-
-  const handleCancel = () => setIsModify(false);
+  const handleDelete = () => handleDeleteTodo(todo);
 
   return (
     <li className='todo'>

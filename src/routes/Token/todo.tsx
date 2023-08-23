@@ -1,21 +1,14 @@
-import TodoItem from '../../component/TodoItem';
-import useTodos from '../../hook/useTodos';
+import TodoInput from '../../component/TodoInput';
+import TodoList from '../../component/TodoList';
+import { TodoProvider } from '../../context/TodoProvider';
 
 function Todo() {
-  const { text, todos, handleChangeText, handleCreateTodo, handleUpdateTodo, handleDeleteTodo } = useTodos();
   return (
-    <div>
+    <TodoProvider>
       <h1>TODO</h1>
-      <form onSubmit={handleCreateTodo}>
-        <input data-testid='new-todo-input' name='todo' value={text} onChange={handleChangeText} />
-        <button data-testid='new-todo-add-button'>추가</button>
-      </form>
-      <ul>
-        {todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} onModifyTodo={handleUpdateTodo} onDeleteTodo={handleDeleteTodo} />
-        ))}
-      </ul>
-    </div>
+      <TodoInput />
+      <TodoList />
+    </TodoProvider>
   );
 }
 
