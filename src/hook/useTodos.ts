@@ -29,16 +29,16 @@ function useTodos() {
     [text]
   );
 
-  const handleUpdateTodo = useCallback(async (todo: UpdateTodoParams) => {
-    const { id } = todo;
+  const handleUpdateTodo = useCallback(async (_todo: UpdateTodoParams) => {
+    const { id } = _todo;
     try {
-      await updateTodo(todo);
-      setTodos((todos) => todos.map((todo) => (todo.id === id ? { ...todo } : todo)));
+      await updateTodo(_todo);
+      setTodos((todos) => todos.map((todo) => (todo.id === id ? { ...todo, ..._todo } : todo)));
     } catch (e) {}
   }, []);
 
-  const handleDeleteTodo = useCallback(async (todo: DeleteTodoParams) => {
-    const { id } = todo;
+  const handleDeleteTodo = useCallback(async (_todo: DeleteTodoParams) => {
+    const { id } = _todo;
     try {
       await deleteTodo({ id });
       setTodos((todos) => todos.filter((todo) => todo.id !== id));
