@@ -34,6 +34,7 @@ export type UpdateTodoParams = {
   todo: string;
   isCompleted: boolean;
 };
+
 export type UpdateTodoResponse = {
   id: number;
   todo: string;

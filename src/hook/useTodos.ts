@@ -21,9 +21,9 @@ function useTodos() {
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       try {
-        const res = await createTodo({ todo: text });
-        setTodos((todos) => [...todos, res]);
         setText('');
+        setTodos((todos) => [...todos, res]);
+        const res = await createTodo({ todo: text });
       } catch (e) {}
     },
     [text]
@@ -32,16 +32,16 @@ function useTodos() {
   const handleUpdateTodo = useCallback(async (_todo: UpdateTodoParams) => {
     const { id } = _todo;
     try {
-      await updateTodo(_todo);
       setTodos((todos) => todos.map((todo) => (todo.id === id ? { ...todo, ..._todo } : todo)));
+      await updateTodo(_todo);
     } catch (e) {}
   }, []);
 
   const handleDeleteTodo = useCallback(async (_todo: DeleteTodoParams) => {
     const { id } = _todo;
     try {
-      await deleteTodo({ id });
       setTodos((todos) => todos.filter((todo) => todo.id !== id));
+      await deleteTodo({ id });
     } catch (e) {}
   }, []);
 
