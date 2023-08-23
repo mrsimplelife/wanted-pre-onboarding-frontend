@@ -1,10 +1,13 @@
-import { useEffect } from 'react';
-import { NavLink, Navigate, Outlet, Route, createBrowserRouter, createRoutesFromElements, useNavigate, useNavigation } from 'react-router-dom';
-import { AuthProvider, useAuth } from '../context/AuthContext';
+import { Outlet, Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { AuthProvider } from '../context/AuthContext';
 import ErrorPage from '../error-page';
-import Signin from '../routes/signin';
-import Signup from '../routes/signup';
-import Todo from '../routes/todo';
+import Index from '../routes';
+import NotToken from '../routes/NotToken';
+import Signin from '../routes/NotToken/signin';
+import Signup from '../routes/NotToken/signup';
+import Todo from '../routes/Token/todo';
+import Layout from '../routes/layout';
+import Token from '../routes/Token';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,69 +37,4 @@ function Root() {
       <Outlet />
     </AuthProvider>
   );
-}
-
-function Layout() {
-  const { token, handleSignout } = useAuth();
-  return (
-    <>
-      <nav>
-        <ul>
-          {!token && (
-            <>
-              <li>
-                <NavLink to={`signup`} className={({ isActive }) => (isActive ? 'active' : '')}>
-                  회원가입
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`signin`} className={({ isActive }) => (isActive ? 'active' : '')}>
-                  로그인
-                </NavLink>
-              </li>
-            </>
-          )}
-          {!!token && (
-            <>
-              <li>
-                <button onClick={handleSignout}>로그아웃</button>
-              </li>
-            </>
-          )}
-        </ul>
-      </nav>
-      <Outlet />
-    </>
-  );
-}
-
-function Index() {
-  const { token } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (token) {
-      navigate('/todo', { replace: true });
-    } else {
-      navigate('/signin', { replace: true });
-    }
-  }, [navigate, token]);
-  return null;
-}
-
-function NotToken() {
-  const { token } = useAuth();
-  const navigation = useNavigation();
-  if (token) {
-    return <Navigate to={'todo'} replace state={navigation.state} />;
-  }
-  return <Outlet />;
-}
-
-function Token() {
-  const { token } = useAuth();
-  const navigation = useNavigation();
-  if (!token) {
-    return <Navigate to={'signin'} replace state={navigation.state} />;
-  }
-  return <Outlet />;
 }

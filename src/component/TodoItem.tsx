@@ -1,26 +1,5 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, memo, useEffect, useRef, useState } from 'react';
 import { DeleteTodoParams, UpdateTodoParams } from '../service/todo';
-import useTodos from '../hook/useTodos';
-
-function Todo() {
-  const { text, todos, handleChangeText, handleCreateTodo, handleUpdateTodo, handleDeleteTodo } = useTodos();
-  return (
-    <div>
-      <h1>TODO</h1>
-      <form onSubmit={handleCreateTodo}>
-        <input data-testid='new-todo-input' name='todo' value={text} onChange={handleChangeText} />
-        <button data-testid='new-todo-add-button'>추가</button>
-      </form>
-      <ul>
-        {todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} onModifyTodo={handleUpdateTodo} onDeleteTodo={handleDeleteTodo} />
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default Todo;
 
 type TodoItemProps = {
   todo: UpdateTodoParams;
@@ -41,23 +20,33 @@ const TodoItem = memo(function TodoItem({ todo, onModifyTodo, onDeleteTodo }: To
     }
   }, [isModify, todoText]);
 
+  const handleChangeCheck = (e: ChangeEvent<HTMLInputElement>) => onModifyTodo({ ...todo, isCompleted: e.target.checked });
+
+  const handleModify = () => setIsModify(true);
+
   const handleSubmit = () => {
     onModifyTodo({ ...todo, todo: text });
     setIsModify(false);
   };
 
+  const handleDelete = () => onDeleteTodo(todo);
+
+  const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
+
+  const handleCancel = () => setIsModify(false);
+
   return (
     <li className='todo'>
       <label>
-        <input type='checkbox' checked={isCompleted} onChange={(e) => onModifyTodo({ ...todo, isCompleted: e.target.checked })} />
+        <input type='checkbox' checked={isCompleted} onChange={handleChangeCheck} />
         {!isModify && <span>{todoText}</span>}
       </label>
       {!isModify && (
         <>
-          <button data-testid='modify-button' onClick={() => setIsModify(true)}>
+          <button data-testid='modify-button' onClick={handleModify}>
             수정
           </button>
-          <button className='delete' data-testid='delete-button' onClick={() => onDeleteTodo(todo)}>
+          <button className='delete' data-testid='delete-button' onClick={handleDelete}>
             삭제
           </button>
         </>
@@ -65,10 +54,10 @@ const TodoItem = memo(function TodoItem({ todo, onModifyTodo, onDeleteTodo }: To
       {isModify && (
         <>
           <form onSubmit={handleSubmit}>
-            <input ref={inputRef} data-testid='modify-input' value={text} onChange={(e) => setText(e.target.value)} />
+            <input ref={inputRef} data-testid='modify-input' value={text} onChange={handleChangeText} />
             <button data-testid='submit-button'>제출</button>
           </form>
-          <button data-testid='cancel-button' onClick={() => setIsModify(false)}>
+          <button data-testid='cancel-button' onClick={handleCancel}>
             취소
           </button>
         </>
@@ -76,3 +65,5 @@ const TodoItem = memo(function TodoItem({ todo, onModifyTodo, onDeleteTodo }: To
     </li>
   );
 });
+
+export default TodoItem;
