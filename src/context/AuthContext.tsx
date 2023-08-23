@@ -1,14 +1,7 @@
-import { FormEventHandler, PropsWithChildren, createContext, useContext } from 'react';
-import useAuth from '../hook/useAuth';
+import { PropsWithChildren, createContext, useContext } from 'react';
+import useAuth, { UseAuth } from '../hook/useAuth';
 
-type AuthContextType = {
-  token: string | null;
-  handleSignin: FormEventHandler<HTMLFormElement>;
-  handleSignout: () => void;
-  handleSignup: FormEventHandler<HTMLFormElement>;
-};
-
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<UseAuth | null>(null);
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const { handleSignin, handleSignout, handleSignup, token } = useAuth();
@@ -19,3 +12,5 @@ export function AuthProvider({ children }: PropsWithChildren) {
 export function useAuthContext() {
   return useContext(AuthContext)!;
 }
+
+export type AuthContextType = Partial<ReturnType<typeof useAuthContext>>;

@@ -2,11 +2,11 @@ import { useTodoContext } from '../context/TodoProvider';
 import TodoItem from './TodoItem';
 
 function TodoList() {
-  const { todos } = useTodoContext();
+  const { todos, handleUpdateTodo, handleDeleteTodo } = useTodoContext();
   return (
     <ul>
       {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} />
+        <TodoItem key={todo.id} todoItem={todo} onUpdate={handleUpdateTodo} onDelete={handleDeleteTodo} />
       ))}
     </ul>
   );

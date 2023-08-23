@@ -1,51 +1,39 @@
-import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react';
-import { DeleteTodoParams, GetTodosResponse, UpdateTodoParams, createTodo, deleteTodo, getTodos, updateTodo } from '../service/todo';
+import { useCallback, useEffect, useState } from 'react';
+import { DeleteTodoParams, GetTodosResponse, UpdateTodoParams, postTodo, deleteTodo, getTodos, putTodo } from '../service/todo';
 
 function useTodos() {
-  const [text, setText] = useState('');
   const [todos, setTodos] = useState<GetTodosResponse>([]);
 
   useEffect(() => {
-    async function fetchTodos() {
-      const res = await getTodos();
-      setTodos(res);
-    }
-    fetchTodos();
+    getTodos().then(setTodos);
   }, []);
 
-  const handleChangeText = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+  const handleCreateTodo = useCallback(async (text: string) => {
+    try {
+      const res = await postTodo({ todo: text });
+      setTodos((todos) => [...todos, res]);
+    } catch (e) {}
   }, []);
-
-  const handleCreateTodo = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      try {
-        setText('');
-        const res = await createTodo({ todo: text });
-        setTodos((todos) => [...todos, res]);
-      } catch (e) {}
-    },
-    [text]
-  );
 
   const handleUpdateTodo = useCallback(async (_todo: UpdateTodoParams) => {
     const { id } = _todo;
     try {
+      await putTodo(_todo);
       setTodos((todos) => todos.map((todo) => (todo.id === id ? { ...todo, ..._todo } : todo)));
-      await updateTodo(_todo);
     } catch (e) {}
   }, []);
 
   const handleDeleteTodo = useCallback(async (_todo: DeleteTodoParams) => {
     const { id } = _todo;
     try {
-      setTodos((todos) => todos.filter((todo) => todo.id !== id));
       await deleteTodo({ id });
+      setTodos((todos) => todos.filter((todo) => todo.id !== id));
     } catch (e) {}
   }, []);
 
-  return { text, todos, handleChangeText, handleCreateTodo, handleUpdateTodo, handleDeleteTodo };
+  return { todos, handleCreateTodo, handleUpdateTodo, handleDeleteTodo };
 }
 
 export default useTodos;
+
+export type UseTodos = ReturnType<typeof useTodos>;

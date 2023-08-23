@@ -1,69 +1,37 @@
-import { ChangeEvent, memo, useEffect, useRef, useState } from 'react';
-
-import { useTodoContext } from '../context/TodoProvider';
-import { UpdateTodoParams } from '../service/todo';
+import { ChangeEvent, memo, useState } from 'react';
+import { TodoContextType } from '../context/TodoProvider';
+import TodoItemButtons from './TodoItemButtons';
+import TodoItemInput from './TodoItemInput';
 
 type TodoItemProps = {
-  todo: UpdateTodoParams;
+  todoItem: TodoContextType['todos'][number];
+  onDelete: TodoContextType['handleDeleteTodo'];
+  onUpdate: TodoContextType['handleUpdateTodo'];
 };
 
-const TodoItem = memo(function TodoItem({ todo }: TodoItemProps) {
-  const { isCompleted, todo: todoText } = todo;
+const TodoItem = memo(function TodoItem({ todoItem: { id, isCompleted, todo }, onDelete, onUpdate }: TodoItemProps) {
+  const handleChangeCheck = (e: ChangeEvent<HTMLInputElement>) => onUpdate({ id, todo, isCompleted: e.target.checked });
 
   const [isModify, setIsModify] = useState(false);
-  const [text, setText] = useState(todoText);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isModify) {
-      setText(todoText);
-      inputRef.current?.focus();
-    }
-  }, [isModify, todoText]);
-
-  const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
   const handleModify = () => setIsModify(true);
   const handleCancel = () => setIsModify(false);
 
-  const { handleUpdateTodo, handleDeleteTodo } = useTodoContext();
+  const handleDelete = () => onDelete({ id });
 
-  const handleChangeCheck = (e: ChangeEvent<HTMLInputElement>) => handleUpdateTodo({ ...todo, isCompleted: e.target.checked });
-
-  const handleSubmit = () => {
-    handleUpdateTodo({ ...todo, todo: text });
-    setIsModify(false);
+  const handleSubmit = async (todo: string) => {
+    await onUpdate({ id, isCompleted, todo });
+    handleCancel();
   };
-
-  const handleDelete = () => handleDeleteTodo(todo);
 
   return (
     <li className='todo'>
       <label>
         <input type='checkbox' checked={isCompleted} onChange={handleChangeCheck} />
-        {!isModify && <span>{todoText}</span>}
+        {!isModify && <span>{todo}</span>}
       </label>
-      {!isModify && (
-        <>
-          <button data-testid='modify-button' onClick={handleModify}>
-            수정
-          </button>
-          <button className='delete' data-testid='delete-button' onClick={handleDelete}>
-            삭제
-          </button>
-        </>
-      )}
-      {isModify && (
-        <>
-          <form onSubmit={handleSubmit}>
-            <input ref={inputRef} data-testid='modify-input' value={text} onChange={handleChangeText} />
-            <button data-testid='submit-button'>제출</button>
-          </form>
-          <button data-testid='cancel-button' onClick={handleCancel}>
-            취소
-          </button>
-        </>
-      )}
+      {!isModify && <TodoItemButtons onModify={handleModify} onDelete={handleDelete} />}
+      {isModify && <TodoItemInput todoText={todo} onSubmit={handleSubmit} onCancel={handleCancel} />}
     </li>
   );
 });

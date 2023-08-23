@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import axiosInstance from '../../axios';
+import axiosInstance from '../axios';
 
 export type CreateTodoParams = {
   todo: string;
@@ -12,7 +12,7 @@ export type CreateTodoResponse = {
   userId: number;
 };
 
-export const createTodo = async (params: CreateTodoParams) => {
+export const postTodo = async (params: CreateTodoParams) => {
   const res: AxiosResponse<CreateTodoResponse> = await axiosInstance.post('/todos', params);
   return res.data;
 };
@@ -42,7 +42,7 @@ export type UpdateTodoResponse = {
   userId: number;
 };
 
-export const updateTodo = async ({ id, ...params }: UpdateTodoParams) => {
+export const putTodo = async ({ id, ...params }: UpdateTodoParams) => {
   const res: AxiosResponse<UpdateTodoResponse> = await axiosInstance.put(`/todos/${id}`, params);
   return res.data;
 };

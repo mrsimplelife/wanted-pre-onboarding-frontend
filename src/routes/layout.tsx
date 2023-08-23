@@ -22,11 +22,9 @@ function Layout() {
             </>
           )}
           {!!token && (
-            <>
-              <li>
-                <button onClick={handleSignout}>로그아웃</button>
-              </li>
-            </>
+            <li>
+              <button onClick={handleSignout}>로그아웃</button>
+            </li>
           )}
         </ul>
       </nav>

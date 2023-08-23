@@ -1,26 +1,16 @@
-import { ChangeEvent, FormEvent, PropsWithChildren, createContext, useContext } from 'react';
-import useTodos from '../hook/useTodos';
-import { DeleteTodoParams, GetTodosResponse, UpdateTodoParams } from '../service/todo';
+import { PropsWithChildren, createContext, useContext } from 'react';
+import useTodos, { UseTodos } from '../hook/useTodos';
 
-type TodoContextType = {
-  text: string;
-  todos: GetTodosResponse;
-  handleChangeText: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleCreateTodo: (e: FormEvent<HTMLFormElement>) => void;
-  handleUpdateTodo: (_todo: UpdateTodoParams) => void;
-  handleDeleteTodo: (_todo: DeleteTodoParams) => void;
-};
-
-const TodoContext = createContext<TodoContextType | null>(null);
+const TodoContext = createContext<UseTodos | null>(null);
 
 export function TodoProvider({ children }: PropsWithChildren) {
-  const { text, todos, handleChangeText, handleCreateTodo, handleUpdateTodo, handleDeleteTodo } = useTodos();
+  const { todos, handleCreateTodo, handleUpdateTodo, handleDeleteTodo } = useTodos();
 
-  return (
-    <TodoContext.Provider value={{ text, todos, handleChangeText, handleCreateTodo, handleUpdateTodo, handleDeleteTodo }}>{children}</TodoContext.Provider>
-  );
+  return <TodoContext.Provider value={{ todos, handleCreateTodo, handleUpdateTodo, handleDeleteTodo }}>{children}</TodoContext.Provider>;
 }
 
 export function useTodoContext() {
   return useContext(TodoContext)!;
 }
+
+export type TodoContextType = ReturnType<typeof useTodoContext>;
