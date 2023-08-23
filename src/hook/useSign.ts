@@ -1,6 +1,6 @@
 import { ChangeEventHandler, useCallback, useState } from 'react';
 
-export const useSign = () => {
+function useSign() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -9,9 +9,7 @@ export const useSign = () => {
 
   const disabled = !email.includes('@') || password.length < 8;
 
-  return {
-    handleEmailChanged,
-    handlePasswordChanged,
-    disabled,
-  };
-};
+  return { handleEmailChanged, handlePasswordChanged, disabled };
+}
+
+export default useSign;

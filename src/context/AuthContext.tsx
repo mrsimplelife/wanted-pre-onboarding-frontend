@@ -1,6 +1,6 @@
 import { FormEventHandler, PropsWithChildren, createContext, useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signin, signup } from '../api/auth';
+import { signin, signup } from '../service/auth';
 import { getFormValue } from '../utils';
 
 type AuthContextType = {
@@ -11,10 +11,6 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
-
-export const useAuth = () => {
-  return useContext(AuthContext)!;
-};
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -51,4 +47,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   return <AuthContext.Provider value={{ token, handleSignin, handleSignup, handleSignout }}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  return useContext(AuthContext)!;
 }

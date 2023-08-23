@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { NavLink, Navigate, Outlet, Route, createBrowserRouter, createRoutesFromElements, useNavigate, useNavigation } from 'react-router-dom';
-import { AuthProvider, useAuth } from '../context/auth';
+import { AuthProvider, useAuth } from '../context/AuthContext';
 import ErrorPage from '../error-page';
 import Signin from '../routes/signin';
 import Signup from '../routes/signup';
