@@ -11,4 +11,4 @@ $ npm start
 
 [데모 배포 링크](https://wanted-pre-onboarding-frontend-mrsimplelife.vercel.app/)
 
-![demo](https://github.com/mrsimplelife/wanted-pre-onboarding-frontend/assets/22779951/966582c8-bf4d-4c97-8b74-06205631cd37)
+<!-- ![demo](https://github.com/mrsimplelife/wanted-pre-onboarding-frontend/assets/22779951/966582c8-bf4d-4c97-8b74-06205631cd37) -->
